@@ -1,11 +1,13 @@
 """ Lazy Probabilistic Roadmap (PRM) implementation. """
 
+import numpy as np
 import time
 import warnings
 
 from .planner_base import PathPlannerBase
 from ..utils.motion import Path
 from ..utils.search_graph import SearchGraph, Node
+from ..utils.pose import Pose
 
 
 class LazyPRMPlannerPolygon:
@@ -29,13 +31,45 @@ class LazyPRMPlannerPolygon:
         :type world: :class:`pyrobosim.core.world.World`
         """
         # Parameters
+        self.max_connection_dist = max_connection_dist
         self.max_nodes = max_nodes
         self.world = world
 
+        # 
+        self.construct_graph()
+
+    def construct_graph(self):
         # Create a search graph and sample nodes.
         self.graph = SearchGraph(
             color=[0, 0.4, 0.8], color_alpha=0.25, use_planner=True
         )
+
+        x_bounds, y_bounds = self.world.get_bounds()
+        for i in range(self.max_nodes):
+            n_sample = self.sample_configuration(x_bounds, y_bounds)
+            if not n_sample:
+                warnings.warn(f"Could not sample more than {i} nodes")
+                break
+            self.graph.add_node(Node(pose=n_sample))
+
+        for node in self.graph.nodes:
+            for other in self.graph.nodes:
+                if node == other:
+                    continue;
+                distance = node.pose.get_linear_distance(other.pose, ignore_z=True)
+                if self.max_connection_dist and (distance <= self.max_connection_dist):
+                    self.graph.add_edge(node, other)
+
+    def sample_configuration(self, x_bounds, y_bounds):
+        xmin, xmax = x_bounds
+        ymin, ymax = y_bounds
+
+        x = (xmax - xmin) * np.random.random() + xmin
+        y = (ymax - ymin) * np.random.random() + ymin
+        yaw = 2.0 * np.pi * np.random.random()
+        pose = Pose(x=x, y=y, z=0.0, yaw=yaw)
+
+        return pose
 
     def plan(self, start, goal):
         """
