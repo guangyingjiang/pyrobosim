@@ -3,6 +3,7 @@ import warnings
 from pyrobosim.navigation.a_star import AstarPlanner
 from pyrobosim.navigation.rrt import RRTPlanner
 from pyrobosim.navigation.prm import PRMPlanner
+from pyrobosim.navigation.lazy_prm import LazyPRMPlanner
 from pyrobosim.navigation.world_graph import WorldGraphPlanner
 
 
@@ -25,6 +26,7 @@ class PathPlanner:
             "astar": AstarPlanner,
             "rrt": RRTPlanner,
             "prm": PRMPlanner,
+            "lazy_prm": LazyPRMPlanner,
             "world_graph": WorldGraphPlanner,
         }
 
