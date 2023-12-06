@@ -1,15 +1,56 @@
-# pyrobosim
+# pyrobosim with Lazy PRM planner
 
-[![Pyrobosim Tests](https://github.com/sea-bass/pyrobosim/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/sea-bass/pyrobosim/actions/workflows/tests.yml)
-[![Documentation Status](https://readthedocs.org/projects/pyrobosim/badge/?version=latest)](https://pyrobosim.readthedocs.io/en/latest/?badge=latest)
+Lazy PRM is a specific variant of the PRM algorithm. In the context of motion planning, "lazy" strategies focus on postponing computations until they are actually needed. In the case of Lazy PRM, the roadmap is built incrementally as the planner explores the configuration space.
 
-ROS 2 enabled 2D mobile robot simulator for behavior prototyping.
+The basic idea behind Lazy PRM is to only generate and evaluate portions of the roadmap that are necessary to find a path when requested. Traditional PRM constructs the entire roadmap in advance, which can be computationally expensive, especially in high-dimensional spaces. Lazy PRM, on the other hand, postpones the expensive parts of the computation until they are needed for a specific query.
 
-By Sebastian Castro, 2022-2023
+Lazy PRM is often preferred in scenarios where the configuration space is large or complex, as it can potentially save computational resources by only computing the parts of the roadmap that are relevant to the specific start and goal configurations.
 
-Refer to the [full documentation](https://pyrobosim.readthedocs.io/) for setup, usage, and other concepts.
+## implementation
 
-We look forward to your open-source contributions to pyrobosim.
-For more information, refer to the [contributor guide](CONTRIBUTING.md).
+In this Lazy PRM implementation, during the sampling stage, a search graph is constructed without expensive collision checks. When sampling the configuration space, a randomly selected node is added to the graph without verifying whether the node is free. As all nodes are generated throughout the space, edges between nodes are also created without confirming their collision-free status.
 
-![Example animation of the simulator](docs/source/media/pyrobosim_demo.gif)
+During the planning stage, when a path is generated, collision checks come into play to verify whether a waypoint and the edge leading to it are collision-free. If a collision is detected, the waypoint is removed from the graph, and a new path is subsequently generated based on the updated graph.
+
+## result
+
+For about same amount of sampling time, PRM planner and Lazy PRM planner is compared and result is as shown
+
+### PRM planner
+
+```
+Planner : PRMPlannerPolygon
+nodes: 200
+Sampling time : 1.8359971046447754
+[robot] Navigating to Room: bedroom
+Planning time : 0.04686617851257324
+[robot] Navigating to Room: bathroom
+Planning time : 0.07547473907470703
+[robot] Navigating to Room: kitchen
+Planning time : 0.06770682334899902
+```
+![PRM planner](image_url)
+
+### Lazy PRM planner
+
+```
+Planner : LazyPRMPlannerPolygon
+nodes: 1000
+Sampling time : 1.4912128448486328
+[robot] Navigating to Room: bedroom
+Planning time : 2.99320125579834
+[robot] Navigating to Room: bathroom
+Planning time : 1.2985970973968506
+[robot] Navigating to Room: kitchen
+Planning time : 0.0724947452545166
+```
+
+![Lazy PRM planner From start to bedroom](image_url)
+![Lazy PRM planner From bedroom to bathroom](image_url)
+![Lazy PRM planner From bathroom to kitchen](image_url)
+
+### conclusion
+
+ * For about same amount of sampling time, Lazy PRM planner can sample more nodes than PRM planner due to no collision checks.
+ * Lazy PRM planner uses more planning time than PRM planner for first few runs due to collision checks in planning stage.
+ * Lazy PRM planner about same time than PRM planner after a few runs due to updated and simplified search graph.
