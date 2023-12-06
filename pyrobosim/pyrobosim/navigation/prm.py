@@ -175,9 +175,8 @@ class PRMPlanner(PathPlannerBase):
         :return: Path from start to goal.
         :rtype: :class:`pyrobosim.utils.motion.Path`
         """
-        start_time = time.time()
         self.latest_path = self.impl.plan(start, goal)
         print(f"Planning time : {self.impl.planning_time}")
-        self.planning_time = time.time() - start_time
+        self.planning_time = self.impl.planning_time
         self.graphs = self.impl.get_graphs()
         return self.latest_path

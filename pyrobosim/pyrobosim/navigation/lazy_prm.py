@@ -17,6 +17,7 @@ class LazyPRMPlannerPolygon:
 
     def __init__(
         self,
+        collision_check_step_dist=0.025,
         max_connection_dist=2.0,
         max_nodes=50,
         world=None,
@@ -30,6 +31,7 @@ class LazyPRMPlannerPolygon:
         :type world: :class:`pyrobosim.core.world.World`
         """
         # Parameters
+        self.collision_check_step_dist = collision_check_step_dist
         self.max_connection_dist = max_connection_dist
         self.max_nodes = max_nodes
         self.max_path_check = max_nodes
@@ -116,11 +118,11 @@ class LazyPRMPlannerPolygon:
         while i < self.max_path_check:
             i += 1
             path = self.graph.find_path(start, goal)
-            if self.is_path_collision_free(path):
+            if path.poses and self.is_path_collision_free(path):
                 break;
 
         # if a collision free path is found, update the path to return
-        if i != self.max_path_check:
+        if i < self.max_path_check:
             self.latest_path = path
             self.latest_path.fill_yaws()
         
@@ -140,15 +142,22 @@ class LazyPRMPlannerPolygon:
         :rtype: bool
         """
         path_collion_free = True
-        nodes_to_remove = set()
-        for waypoint in path.poses:
-            if self.world.check_occupancy(waypoint):
+        # check if a waypoint and edge to it is collision free, if not, remove the waypoint from the graph
+        previous_pose = path.poses[0]
+        for waypoint in path.poses[1:]:
+            if self.world.check_occupancy(waypoint) or \
+                not self.world.is_connectable(previous_pose, waypoint, self.collision_check_step_dist, self.max_connection_dist):
                 path_collion_free = False
+                nodes_to_remove = set()
                 for node in self.graph.nodes:
                     if waypoint == node.pose:
                         nodes_to_remove.add(node)
-        for node in nodes_to_remove:
-            self.graph.remove_node(node)        
+                for node in nodes_to_remove:
+                    self.graph.remove_node(node)
+                break
+            else:
+                previous_pose = waypoint
+
         return path_collion_free
 
     def get_graphs(self):
