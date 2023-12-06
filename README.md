@@ -29,7 +29,7 @@ Planning time : 0.07547473907470703
 [robot] Navigating to Room: kitchen
 Planning time : 0.06770682334899902
 ```
-![PRM planner](image_url)
+![PRM planner](https://github.com/guangyingjiang/pyrobosim/blob/custom_PRM/figures/PRM.png)
 
 ### Lazy PRM planner
 
@@ -45,9 +45,9 @@ Planning time : 1.2985970973968506
 Planning time : 0.0724947452545166
 ```
 
-![Lazy PRM planner From start to bedroom](image_url)
-![Lazy PRM planner From bedroom to bathroom](image_url)
-![Lazy PRM planner From bathroom to kitchen](image_url)
+![Lazy PRM planner From start to bedroom](https://github.com/guangyingjiang/pyrobosim/blob/custom_PRM/figures/Lazy%20PRM%20to%20bedroom.png)
+![Lazy PRM planner From bedroom to bathroom](https://github.com/guangyingjiang/pyrobosim/blob/custom_PRM/figures/Lazy%20PRM%20to%20bathroom.png)
+![Lazy PRM planner From bathroom to kitchen](https://github.com/guangyingjiang/pyrobosim/blob/custom_PRM/figures/Lazy%20PRM%20to%20kitchen.png)
 
 ### conclusion
 
