@@ -47,7 +47,7 @@ class PRMPlannerPolygon:
 
     def reset(self):
         """Resamples the PRM and resets planning metrics."""
-        self.planning_time = self.sampling_time = 0.0
+        t_start = time.time()
         self.latest_path = Path()
 
         # Create a search graph and sample nodes.
@@ -61,10 +61,11 @@ class PRMPlannerPolygon:
                 warnings.warn(f"Could not sample more than {i} nodes")
                 break
             self.graph.add_node(Node(pose=n_sample))
-        self.sampling_time = time.time() - t_start
-
+        
         for node in self.graph.nodes:
             self.connect_neighbors(node)
+
+        self.sampling_time = time.time() - t_start
 
     def connect_neighbors(self, node):
         """
@@ -99,7 +100,7 @@ class PRMPlannerPolygon:
         """
         # Reset the path and time
         self.latest_path = Path()
-        self.planning_time = 0.0
+        t_start = time.time()
         # Create the start and goal nodes
         if isinstance(start, Pose):
             start = Node(start, parent=None)
@@ -112,7 +113,6 @@ class PRMPlannerPolygon:
         self.connect_neighbors(goal)
 
         # Find a path from start to goal nodes
-        t_start = time.time()
         self.latest_path = self.graph.find_path(start, goal)
         if self.compress_path:
             compressed_poses = reduce_waypoints_polygon(
@@ -120,9 +120,12 @@ class PRMPlannerPolygon:
             )
             self.latest_path.set_poses(compressed_poses)
         self.latest_path.fill_yaws()
-        self.planning_time = time.time() - t_start
+        
         self.graph.remove_node(start)
         self.graph.remove_node(goal)
+
+        self.planning_time = time.time() - t_start
+
         return self.latest_path
 
     def sample_configuration(self):
@@ -159,6 +162,7 @@ class PRMPlanner(PathPlannerBase):
             raise NotImplementedError("Grid based PRM is not supported. ")
         else:
             self.impl = PRMPlannerPolygon(**planner_config)
+            print(f"Sampling time : {self.impl.sampling_time}")
 
     def plan(self, start, goal):
         """
@@ -173,6 +177,7 @@ class PRMPlanner(PathPlannerBase):
         """
         start_time = time.time()
         self.latest_path = self.impl.plan(start, goal)
+        print(f"Planning time : {self.impl.planning_time}")
         self.planning_time = time.time() - start_time
         self.graphs = self.impl.get_graphs()
         return self.latest_path

@@ -17,7 +17,7 @@ def test_lazy_prm():
     planner_config = {
         "world": world,
         "max_nodes": 1000,
-        "max_connection_dist": 0.5
+        "max_connection_dist": 0.75
     }
     lazyPRM = PathPlanner("lazy_prm", **planner_config)
     start = Pose(x=-0.5, y=-0.5)
