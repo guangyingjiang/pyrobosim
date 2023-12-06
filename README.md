@@ -14,10 +14,10 @@ During the planning stage, when a path is generated, collision checks come into 
 
 ## result
 
-For about same amount of sampling time, PRM planner and Lazy PRM planner is compared and result is as shown
+For about same amount of sampling time, PRM planner and Lazy PRM planner is compared in navigation to bedroom, bathroom and kitchen, and result is as following
 
 ### PRM planner
-
+sampling time, nodes, and planning time to each room
 ```
 Planner : PRMPlannerPolygon
 nodes: 200
@@ -29,10 +29,12 @@ Planning time : 0.07547473907470703
 [robot] Navigating to Room: kitchen
 Planning time : 0.06770682334899902
 ```
+
+A figure of PRM planner search graph with 200 nodes
 ![PRM planner](https://github.com/guangyingjiang/pyrobosim/blob/custom_PRM/figures/PRM.png)
 
 ### Lazy PRM planner
-
+sampling time, nodes, and planning time to each room
 ```
 Planner : LazyPRMPlannerPolygon
 nodes: 1000
@@ -45,6 +47,7 @@ Planning time : 1.2985970973968506
 Planning time : 0.0724947452545166
 ```
 
+Figures of Lazy PRM planner search graph with 1000 nodes, and note that search graph is updated after each run
 ![Lazy PRM planner From start to bedroom](https://github.com/guangyingjiang/pyrobosim/blob/custom_PRM/figures/Lazy%20PRM%20to%20bedroom.png)
 ![Lazy PRM planner From bedroom to bathroom](https://github.com/guangyingjiang/pyrobosim/blob/custom_PRM/figures/Lazy%20PRM%20to%20bathroom.png)
 ![Lazy PRM planner From bathroom to kitchen](https://github.com/guangyingjiang/pyrobosim/blob/custom_PRM/figures/Lazy%20PRM%20to%20kitchen.png)
