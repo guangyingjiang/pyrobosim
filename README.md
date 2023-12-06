@@ -57,3 +57,6 @@ Figures of Lazy PRM planner search graph with 1000 nodes, and note that search g
  * For about same amount of sampling time, Lazy PRM planner can sample more nodes than PRM planner due to no collision checks.
  * Lazy PRM planner uses more planning time than PRM planner for first few runs due to collision checks in planning stage.
  * Lazy PRM planner about same time than PRM planner after a few runs due to updated and simplified search graph.
+
+## reference
+1. R. Bohlin and L. E. Kavraki, "Path planning using lazy PRM," Proceedings 2000 ICRA. Millennium Conference. IEEE International Conference on Robotics and Automation. Symposia Proceedings (Cat. No.00CH37065), San Francisco, CA, USA, 2000, pp. 521-528 vol.1, doi: 10.1109/ROBOT.2000.844107.
