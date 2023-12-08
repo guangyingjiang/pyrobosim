@@ -1166,6 +1166,9 @@ class World:
         warnings.warn("Could not sample pose.")
         return None
 
+    def get_bounds(self):
+        return self.x_bounds, self.y_bounds
+
     ###################
     # Graph Utilities #
     ###################

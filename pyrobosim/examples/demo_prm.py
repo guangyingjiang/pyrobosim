@@ -16,19 +16,19 @@ def test_prm():
     """Creates a PRM planner and plans"""
     planner_config = {
         "world": world,
-        "max_nodes": 100,
+        "max_nodes": 200,
         "collision_check_step_dist": 0.025,
-        "max_connection_dist": 1.5,
+        "max_connection_dist": 1.0,
         "compress_path": False,
     }
     prm = PathPlanner("prm", **planner_config)
     start = Pose(x=-0.5, y=-0.5)
-    goal = Pose(x=3.0, y=3.0)
+    # goal = Pose(x=3.0, y=3.0)
 
     robot = world.robots[0]
     robot.set_pose(start)
     robot.set_path_planner(prm)
-    result = robot.plan_path(start, goal)
+    # result = robot.plan_path(start, goal)
     prm.info()
 
 
